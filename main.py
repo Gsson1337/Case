@@ -1,72 +1,53 @@
 import requests
-#import json
 
 def main():
+    # min API nyckel
     api_key = "e00f1c5f8dcfd9423593c096a8212536"
- 
-    # base_url variable to store url
+    
+    # vanliga url hemisdan
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
     
-    # Give city name
-    city_name = input("Enter city name : ")
-    #city_name = "gothenburg"
-    
-    # complete_url variable to store
-    # complete url address
-    complete_url = base_url + "appid=" + api_key + "&q=" + city_name + "&units=metric" + "&lang=sv"
-    
-    # get method of requests module
-    # return response object
-    response = requests.get(complete_url)
-    
-    # json method of response object
-    # convert json format data into
-    # python format data
-    x = response.json()
+    # skriv in vilken stad du vill kolla
+    city = input("\n Skriv in stad : ")
 
-    # Now x contains list of nested dictionaries
-    # Check the value of "cod" key is equal to
-    # "404", means city is found otherwise,
-    # city is not found
-    if x["cod"] != "404":
+    # hela adressen
+    full_url = base_url + "appid=" + api_key + "&q=" + city + "&units=metric" + "&lang=sv"
     
-        # store the value of "main"
-        # key in variable y
-        y = x["main"]
-    
-        # store the value corresponding
-        # to the "temp" key of y
-        current_temperature = y["temp"]
-    
-        # store the value corresponding
-        # to the "pressure" key of y
-        current_pressure = y["pressure"]
-    
-        # store the value corresponding
-        # to the "humidity" key of y
-        current_humidity = y["humidity"]
-    
-        # store the value of "weather"
-        # key in variable z
-        z = x["weather"]
-    
-        # store the value corresponding
-        # to the "description" key at
-        # the 0th index of z
-        weather_description = z[0]["description"]
-    
-        # print following values
-        print(" Temperature (in Celsius unit) = " +
-                        str(current_temperature) + chr(176) +
-            "\n atmospheric pressure (in hPa unit) = " +
-                        str(current_pressure) +
-            "\n humidity (in percentage) = " +
-                        str(current_humidity) +
-            "\n description = " +
-                        str(weather_description))
-    
-    else:
-        print(" City Not Found ")
+    # få hela objektet med all data
+    response = requests.get(full_url)
+
+    # gör om json data till python data
+    data = response.json()
+
+    # om in staden hittades får man skriva igen tills man skriver rätt
+    while data['cod'] == "404":
+        print(" Stad inte hittad")
+
+        city = input("\n Skriv in stad : ")
+
+        full_url = base_url + "appid=" + api_key + "&q=" + city + "&units=metric" + "&lang=sv"
+        
+        response = requests.get(full_url)
+
+        data = response.json()
+
+    # få ut temperaturen
+    temperature = data["main"]["temp"]
+
+    # få ut hur temperaturen känns
+    feels = data["main"]["feels_like"]
+
+    # var tvungen att lägga till [0] pga det kom som en lista
+    description = data["weather"][0]["description"]
+
+    # skriv ut det värden jag tog ut
+    print("\n Temperatur: " +
+                    str(temperature) + chr(176) + "C" + " (" 
+        "känns som = " +
+                    str(feels) + chr(176) + "C" + ")" + 
+        "\n vädret: " +
+                    str(description))
+
 
 if __name__ == "__main__":
     main()
