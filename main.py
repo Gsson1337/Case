@@ -40,8 +40,12 @@ def main():
     # var tvungen att lägga till [0] pga det kom som en lista
     description = data["weather"][0]["description"]
 
+    # Få ut landet där staden är
+    country = data["sys"]["country"]
+
     # skriv ut det värden jag tog ut
-    print("\n Temperatur: " +
+    print("\n Vädret i " + city +","+ country + ":" + 
+        "\n Temperatur: " +
                     str(temperature) + chr(176) + "C" + " (" 
         "känns som = " +
                     str(feels) + chr(176) + "C" + ")" + 
@@ -50,4 +54,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    #kör programmet hela tiden
+    while True:
+        main()
